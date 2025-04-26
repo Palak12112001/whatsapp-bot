@@ -5,10 +5,19 @@ app.use(express.json());
 
 venom
   .create({
-    session: 'mySession', // safer, future-proof
-    multidevice: true, // optional, enables multi-device support
-    headless: true, // <-- IMPORTANT: run without opening browser window
-    browserArgs: ['--no-sandbox', '--disable-setuid-sandbox'], // <-- make it work on server
+    session: 'mySession',
+    multidevice: true,
+    headless: true,  // 🛑 ADD THIS
+    browserArgs: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+      '--disable-gpu'
+    ] // 🛑 ADD THIS
   })
   .then((client) => {
     app.post('/send', async (req, res) => {
@@ -25,8 +34,7 @@ venom
       }
     });
 
-    const PORT = process.env.PORT || 3000; // <-- important for Render
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+    app.listen(3000, () => console.log('Server running on http://localhost:3000'));
   })
   .catch((err) => {
     console.error('Error launching venom:', err);
