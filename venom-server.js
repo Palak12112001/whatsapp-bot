@@ -7,6 +7,8 @@ venom
   .create({
     session: 'mySession', // safer, future-proof
     multidevice: true, // optional, enables multi-device support
+    headless: true, // <-- IMPORTANT: run without opening browser window
+    browserArgs: ['--no-sandbox', '--disable-setuid-sandbox'], // <-- make it work on server
   })
   .then((client) => {
     app.post('/send', async (req, res) => {
@@ -23,7 +25,8 @@ venom
       }
     });
 
-    app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+    const PORT = process.env.PORT || 3000; // <-- important for Render
+    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
   })
   .catch((err) => {
     console.error('Error launching venom:', err);
